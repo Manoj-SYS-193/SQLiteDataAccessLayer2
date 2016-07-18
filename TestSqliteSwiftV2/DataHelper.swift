@@ -11,7 +11,7 @@ import SQLite
 
 
 protocol DataHelperProtocol {
-    typealias T
+    associatedtype T
     static func createTable() throws -> Void
     static func insert(item: T) throws -> Int64
     static func delete(item: T) throws -> Void
@@ -91,7 +91,7 @@ class TeamDataHelper: DataHelperProtocol {
             throw DataAccessError.Datastore_Connection_Error
         }
         let query = table.filter(teamId == id)
-        let items = DB.prepare(query)
+        let items = try DB.prepare(query)
         for item in  items {
             return Team(teamId: item[teamId] , city: item[city], nickName: item[nickName], abbreviation: item[abbreviation])
         }
@@ -105,7 +105,7 @@ class TeamDataHelper: DataHelperProtocol {
             throw DataAccessError.Datastore_Connection_Error
         }
         var retArray = [T]()
-        let items = DB.prepare(table)
+        let items = try DB.prepare(table)
         for item in items {
             retArray.append(Team(teamId: item[teamId], city: item[city], nickName: item[nickName], abbreviation: item[abbreviation]))
         }
@@ -194,7 +194,7 @@ class PlayerDataHelper: DataHelperProtocol {
             throw DataAccessError.Datastore_Connection_Error
         }
         let query = table.filter(playerId == id)
-        let items = DB.prepare(query)
+        let items = try DB.prepare(query)
         for item in  items {
             return Player(playerId: item[playerId], firstName: item[firstName], lastName: item[lastName], number: item[number], teamId: item[teamId], position: Positions(rawValue: item[position]))
         }
@@ -208,7 +208,7 @@ class PlayerDataHelper: DataHelperProtocol {
             throw DataAccessError.Datastore_Connection_Error
         }
         var retArray = [T]()
-        let items = DB.prepare(table)
+        let items = try DB.prepare(table)
         for item in items {
             retArray.append(Player(playerId: item[playerId], firstName: item[firstName], lastName: item[lastName], number: item[number], teamId: item[teamId], position: Positions(rawValue: item[position])))
         }
